@@ -1,8 +1,8 @@
 #!/bin/bash
 # Snippet from https://github.com/girst/hardpass-sendHID/blob/master/README.md . In which, the following notice was left:
-
+# @reboot sleep 60 && bash hid.sh
 # this is a stripped down version of https://github.com/ckuethe/usbarmory/wiki/USB-Gadgets - I don't claim any rights
-
+echo "" > /sys/kernel/config/usb_gadget/g_multi/UDC
 modprobe libcomposite
 cd /sys/kernel/config/usb_gadget/
 mkdir -p g1
@@ -27,3 +27,9 @@ echo "Config $C: ECM network" > configs/c.$C/strings/0x409/configuration
 echo 250 > configs/c.$C/MaxPower 
 ln -s functions/hid.$N configs/c.$C/
 ls /sys/class/udc > UDC
+sleep 5
+for run in {1..10}
+do
+  echo -ne "\x00\x00\x00\x17\x00\x00\x00\x00" > /dev/hidg0
+  echo -ne "\x00\x00\x00\x00\x00\x00\x00\x00"  > /dev/hidg0
+done
